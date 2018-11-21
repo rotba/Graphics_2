@@ -1,0 +1,7 @@
+﻿  main.cpp
+c:\users\user\code\c++\grpahics_1\cpp_code\glfw2d\glfw2d\debugtimer.h(13): warning C4244: '=': conversion from 'uint64_t' to 'unsigned int', possible loss of data
+c:\users\user\code\c++\grpahics_1\cpp_code\glfw2d\glfw2d\debugtimer.h(18): warning C4244: 'initializing': conversion from 'uint64_t' to 'unsigned int', possible loss of data
+c:\users\user\code\c++\grpahics_1\cpp_code\glfw2d\glfw2d\debugtimer.h(24): warning C4244: 'initializing': conversion from 'uint64_t' to 'unsigned int', possible loss of data
+c:\users\user\code\c++\grpahics_1\cpp_code\glfw2d\engine2d\sceneparser.h(36): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\user\code\c++\grpahics_1\cpp_code\glfw2d\glfw2d\main.cpp(34): warning C4305: '+=': truncation from 'double' to 'float'
+  glfw2D.vcxproj -> C:\Users\user\Code\C++\Grpahics_1\cpp_code\glfw2D\Debug\glfw2D.exe
