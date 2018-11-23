@@ -11,7 +11,7 @@ public:
 	Shader(const std::string& fileName);
 
 	void Bind();
-	void Update(float t);
+	void Update();
 	void Shader::set_uniform1f(int indx, float val);
 	void Shader::set_uniform1i(int indx, int val);
 	void Shader::set_uniform2f(int indx,float x,float y);
