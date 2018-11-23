@@ -1,9 +1,11 @@
 {
   "ExpandedNodes": [
     "",
+    "\\glfw2D",
+    "\\glfw2D\\glfw2D",
     "\\glfw2D\\glfw2D\\res",
     "\\glfw2D\\glfw2D\\res\\shaders"
   ],
-  "SelectedNode": "\\glfw2D",
+  "SelectedNode": "\\glfw2D\\glfw2D\\main.cpp",
   "PreviewInSolutionExplorer": false
 }
