@@ -41,24 +41,25 @@ glm::vec4 Scene::parseVec4(const std::string& line)
 
 void Scene::loadtoShader(Shader &shader)
 {
-			shader.set_uniform4v(3,1,&coeffs);			
-			shader.set_uniform4v(4,src_lines.size(),&src_lines[0]);
-			shader.set_uniform4v(5,dst_lines.size(),&dst_lines[0]);
-			shader.set_uniform4vi(6,sizes);
+			shader.set_uniform4v(0,1,&eye);
+			shader.set_uniform4v(1, 1, &ambient);
+			shader.set_uniform4v(2, objects.size(),&objects[0]);
+			shader.set_uniform4v(3, objColors.size(),&objColors[0]);
+			shader.set_uniform4vi(7,sizes);
 				//objects[1].x +=0.001;
 }
 
-void Scene::PrintScene()
-{
-	std::cout<<"coeffs: a = "<<coeffs[1]<<" b= "<<coeffs[2]<<" p = "<<coeffs[3]<<std::endl; 
-	std::cout<<"picture size "<<sizes[2]<<"X"<<sizes[3]<<std::endl;
-	std::cout<<"lines: "<<std::endl; 
-	for (int i = 0; i < sizes[0]; i++)
-	{
-		std::cout<<"source: ("<<src_lines[i].x<<" , "<<src_lines[i].y<<") , ("<<src_lines[i].z<<" , "<<src_lines[i].w<<")"<<std::endl;
-		std::cout<<"distination: ("<<dst_lines[i].x<<" , "<<dst_lines[i].y<<") , ("<<dst_lines[i].z<<" , "<<dst_lines[i].w<<")"<<std::endl;
-	}		
-}
+//void Scene::PrintScene()
+//{
+//	std::cout<<"coeffs: a = "<<coeffs[1]<<" b= "<<coeffs[2]<<" p = "<<coeffs[3]<<std::endl; 
+//	std::cout<<"picture size "<<sizes[2]<<"X"<<sizes[3]<<std::endl;
+//	std::cout<<"lines: "<<std::endl; 
+//	for (int i = 0; i < sizes[0]; i++)
+//	{
+//		std::cout<<"source: ("<<src_lines[i].x<<" , "<<src_lines[i].y<<") , ("<<src_lines[i].z<<" , "<<src_lines[i].w<<")"<<std::endl;
+//		std::cout<<"distination: ("<<dst_lines[i].x<<" , "<<dst_lines[i].y<<") , ("<<dst_lines[i].z<<" , "<<dst_lines[i].w<<")"<<std::endl;
+//	}		
+//}
 
 //parsing file and save width and hight of the image
 Scene::Scene(const std::string& fileName,int width,int height)
@@ -82,18 +83,21 @@ Scene::Scene(const std::string& fileName,int width,int height)
             
             switch(lineCStr[0])
             {
-                case 'c':
-					coeffs = parseVec4(line);
+                case 'e':
+					eye = parseVec4(line);
 				break;
-				case 's':
-					src_lines.push_back( parseVec4(line));
+				case 'a':
+					ambient = parseVec4(line);
 				break;
-				case 'd':
-					dst_lines.push_back( parseVec4(line));
+				case 'o':
+					objects.push_back(parseVec4(line));
+				break;
+				case 'c':
+					objColors.push_back(parseVec4(line));
 				break;
 			}
 		}
-		sizes =  glm::ivec4(src_lines.size(),dst_lines.size(),width,height);
+		sizes =  glm::ivec4(objects.size(), 0, width, height);
 	}
 	else
 	{

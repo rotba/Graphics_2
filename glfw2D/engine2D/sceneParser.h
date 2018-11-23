@@ -7,10 +7,14 @@
 class Scene
 {
 private:
-	glm::vec4 coeffs;         
-	glm::ivec4 sizes;
-	std::vector<glm::vec4> src_lines;     
-	std::vector<glm::vec4> dst_lines;        
+	glm::vec4 eye;
+	glm::vec4 ambient;
+	std::vector<glm::vec4> objects;
+	std::vector<glm::vec4> objColors;
+	std::vector<glm::vec4> lightsDirection;
+	std::vector<glm::vec4> lightsIntensity;
+	std::vector<glm::vec4> lightPosition;
+	glm::ivec4 sizes; //{number of objects , number of lights , width, hight}  
 
 	
 	static inline unsigned int FindNextChar(unsigned int start, const char* str, unsigned int length, char token)

@@ -52,13 +52,13 @@ void Shader::Bind()
 	glUseProgram(m_program);
 }
 
-//update uniforms value in shader
-void Shader::Update(float t)
-{
-	set_uniform1f(0,t);
-	set_uniform1i(1,0);
-	set_uniform1i(2,1);
-}
+////update uniforms value in shader
+//void Shader::Update(float t)
+//{
+//	set_uniform1f(0,t);
+//	set_uniform1i(1,0);
+//	set_uniform1i(2,1);
+//}
 
 //load shader from file
 std::string Shader::LoadShader(const std::string& fileName)
