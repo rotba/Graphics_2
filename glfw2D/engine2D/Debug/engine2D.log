@@ -1,2 +1,9 @@
-﻿  shader.cpp
-  engine2D.vcxproj -> C:\Users\user\Code\C++\Course_ComputerGraphics\Graphics_2\glfw2D\Debug\engine2D.lib
+﻿  mesh.cpp
+  sceneParser.cpp
+c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\engine2d\sceneparser.h(40): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  shader.cpp
+  texture.cpp
+c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\engine2d\texture.cpp(21): warning C4838: conversion from 'int' to 'GLenum' requires a narrowing conversion
+  Generating Code...
+  stb_image.c
+  engine2D.vcxproj -> C:\Users\user\Documents\לימודים\שנה ג\גרפיקה\Graphics_2\glfw2D\Debug\engine2D.lib
