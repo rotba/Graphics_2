@@ -106,7 +106,7 @@ Scene::Scene(const std::string& fileName,int width,int height)
 				break;
 			}
 		}
-		sizes =  glm::ivec4(objects.size(), 0, width, height);
+		sizes =  glm::ivec4(objects.size(), 1, width, height);
 	}
 	else
 	{

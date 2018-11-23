@@ -109,8 +109,8 @@ float intersects_sphere(vec3 sourcePoint,vec3 v, vec4 sphere)
 	float b=dot(2*V,OP);
 	float c=pow(length(OP),2)-R2;
 	float delta=b*b-4*a*c;
-	float t1=(b+sqrt(delta))/2.0;
-	float t2=(b-sqrt(delta))/2.0;
+	float t1=(-b+sqrt(delta))/2.0;
+	float t2=(-b-sqrt(delta))/2.0;
 	t=min(t1,t2);
 	if (t<0){
 		t=max(t1,t2);
