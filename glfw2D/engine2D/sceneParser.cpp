@@ -45,6 +45,11 @@ void Scene::loadtoShader(Shader &shader)
 			shader.set_uniform4v(1, 1, &ambient);
 			shader.set_uniform4v(2, objects.size(),&objects[0]);
 			shader.set_uniform4v(3, objColors.size(),&objColors[0]);
+			shader.set_uniform4v(4, lightsDirection.size(), &lightsDirection[0]);
+			shader.set_uniform4v(5, lightsIntensity.size(), &lightsIntensity[0]);
+			if (lightPosition.size() > 0) {
+				shader.set_uniform4v(6, lightPosition.size(), &lightPosition[0]);
+			}
 			shader.set_uniform4vi(7,sizes);
 				//objects[1].x +=0.001;
 }
@@ -106,7 +111,7 @@ Scene::Scene(const std::string& fileName,int width,int height)
 				break;
 			}
 		}
-		sizes =  glm::ivec4(objects.size(), 1, width, height);
+		sizes =  glm::ivec4(objects.size(), lightsDirection.size(), width, height);
 	}
 	else
 	{

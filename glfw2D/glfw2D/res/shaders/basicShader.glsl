@@ -129,10 +129,11 @@ vec3 calc_light(vec3 p, int obj_idx ,int light_src_idx)
 	return ans;
 }
 vec3 calc_spotlight(vec3 p, int obj_idx ,int light_src_idx){
-	return lightsIntensity[light_src_idx];
 	vec3 light_position = get_spolight_position(p, light_src_idx);
-	vec3 D = lightsDirection[light_src_idx].xyz;
+	vec3 D = normalize(lightsDirection[light_src_idx].xyz);
 	vec3 L = normalize(p - light_position);
+	vec3 I0 = lightsIntensity[light_src_idx].xyz;
+	return I0*dot(D,L);
 
 }
 vec3 calc_directional_light(vec3 p, int obj_idx ,int light_src_idx){
@@ -141,8 +142,8 @@ vec3 calc_directional_light(vec3 p, int obj_idx ,int light_src_idx){
 
 vec3 get_spolight_position(vec3 p, int light_src_idx){
 	vec3 ans;
-	int count = 0;
-	for(int i = 0; i < light_src_idx; i++){
+	int count = -1;
+	for(int i = 0; i <= light_src_idx; i++){
 		if(lightsDirection[i].w == 1.0){
 			count = count+1;
 		}
@@ -170,20 +171,40 @@ vec3 colorCalc( Intersection intrsc)
 {
 	vec3 color;
 	vec3 Ka = objColors[intrsc.index].xyz;
+
 	vec3 KaIamb = Ka*(ambient.xyz);
 	vec3 diffuse;
 	vec3 specular;
 	vec3 Kd = vec3(0.7,0.7,0.7);
+	
+	if(intrsc.index == 0)
+	{
+		vec3 p= intrsc.p;
+		if(p.x * p.y >=0){
+			if((mod(int(1.5*p.x),2) == mod(int(1.5*p.y),2)))
+			{
+				KaIamb=0.5*KaIamb;
+			}
+		}else{
+			if((mod(int(1.5*p.x),2) != mod(int(1.5*p.y),2)))
+			{
+				KaIamb=0.5*KaIamb;
+			}
+		}
+	}
 	vec3 Ks = vec3(0.7,0.7,0.7);
 	for(int i = 0; i < sizes[1]; i++){
 		vec3 N = norm_at_point(intrsc);
-		vec3 L = -lightsDirection[i].xyz;
-		vec3 Ili = -lightsIntensity[i].xyz;
-		diffuse += Kd*(dot(N,L))*Ili;
-
-		vec3 V = eye.xyz - intrsc.p;
+		vec3 L = lightsDirection[i].xyz;
+		vec3 Ili = calc_light(intrsc.p, intrsc.index, i);
+		if((dot(N,L))>0){
+			//diffuse += Kd*(dot(N,L))*Ili;
+		}
+		vec3 V = normalize(eye.xyz - intrsc.p);
 		vec3 R = calc_R(N,L);
-		specular += Ks*(pow(dot(V,R),exponent))*Ili;
+		if((dot(V,R))>0){
+			//specular += Ks*(pow(dot(V,R),2))*Ili;
+		}
 	}
 	color = KaIamb + diffuse + specular;
     return color;
@@ -193,7 +214,7 @@ void main()
 {	
 	vec3 v = position1 - eye.xyz;
 	Intersection intrsc = findIntersection(eye.xyz, v);
-	gl_FragColor = vec4(colorCalc(intrsc),1);      
+	gl_FragColor = vec4(colorCalc(intrsc),1);
 }
  
 
