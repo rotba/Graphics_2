@@ -3,8 +3,7 @@
     "",
     "\\glfw2D",
     "\\glfw2D\\glfw2D",
-    "\\glfw2D\\glfw2D\\res",
-    "\\glfw2D\\glfw2D\\res\\shaders"
+    "\\glfw2D\\glfw2D\\res"
   ],
   "SelectedNode": "\\glfw2D\\glfw2D\\main.cpp",
   "PreviewInSolutionExplorer": false

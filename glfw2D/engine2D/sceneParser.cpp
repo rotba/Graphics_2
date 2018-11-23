@@ -95,6 +95,15 @@ Scene::Scene(const std::string& fileName,int width,int height)
 				case 'c':
 					objColors.push_back(parseVec4(line));
 				break;
+				case 'd':
+					lightsDirection.push_back(parseVec4(line));
+				break;
+				case 'i':
+					lightsIntensity.push_back(parseVec4(line));
+				break;
+				case 'p':
+					lightPosition.push_back(parseVec4(line));
+				break;
 			}
 		}
 		sizes =  glm::ivec4(objects.size(), 0, width, height);
