@@ -83,7 +83,6 @@ std::string Shader::LoadShader(const std::string& fileName)
     }
 
 		
-	Update(0);
     return output;
 }
 
