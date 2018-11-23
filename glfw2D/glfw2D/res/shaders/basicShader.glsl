@@ -1,5 +1,6 @@
  #version 130 
 
+#define exponent 3
 uniform vec4 eye;
 uniform vec4 ambient;
 uniform vec4[20] objects;
@@ -11,6 +12,13 @@ uniform ivec4 sizes; //{number of objects , number of lights , width, hight}
 
 in vec3 position1;
 
+struct Intersection
+{
+  float t;
+  int index;
+  vec3 p;
+};
+
 float intersect(vec3 sourcePoint,vec3 v, vec4 object);
 float intersects_plane(vec3 sourcePoint,vec3 v, vec4 object);
 float intersects_sphere(vec3 sourcePoint,vec3 v, vec4 object);
@@ -19,13 +27,10 @@ vec3 calc_light(vec3 p, int obj_idx ,int light_src_idx);
 vec3 calc_spotlight(vec3 p, int obj_idx ,int light_src_idx);
 vec3 calc_directional_light(vec3 p, int obj_idx ,int light_src_idx);
 vec3 get_spolight_position(vec3 p, int light_src_idx);
+vec3 norm_at_point(Intersection intrsc);
+vec3 calc_R(vec3 N, vec3 L);
 
-struct Intersection
-{
-  float t;
-  int index;
-  vec3 p;
-};
+
 
 Intersection findIntersection(vec3 sourcePoint,vec3 v)
 {
@@ -145,10 +150,25 @@ vec3 get_spolight_position(vec3 p, int light_src_idx){
 	return lightPosition[count];
 }
 
-vec3 colorCalc( vec3 intersectionPoint)
+vec3 norm_at_point(Intersection intrsc)
 {
-	vec3 v = position1 - intersectionPoint;
-	Intersection intrsc = findIntersection(intersectionPoint, v);
+	vec3 ans;
+	if(objects[intrsc.index].w < 0.0){
+		ans = objects[intrsc.index].xyz;
+	}else{
+		ans = intrsc.p - objects[intrsc.index].xyz;
+	}
+	return normalize(ans);
+}
+
+vec3 calc_R(vec3 N, vec3 L)
+{
+	return reflect(-L, N);
+}
+
+vec3 colorCalc( Intersection intrsc)
+{
+	vec3 color;
 	vec3 Ka = objColors[intrsc.index].xyz;
 	vec3 KaIamb = Ka*(ambient.xyz);
 	vec3 diffuse;
@@ -156,17 +176,24 @@ vec3 colorCalc( vec3 intersectionPoint)
 	vec3 Kd = vec3(0.7,0.7,0.7);
 	vec3 Ks = vec3(0.7,0.7,0.7);
 	for(int i = 0; i < sizes[1]; i++){
-		vec3 N = norm_at_point(intersect);
-		vec3 L = -lightsDirection[i];
-		vec3 Ili = -lightsIntensity[i];
+		vec3 N = norm_at_point(intrsc);
+		vec3 L = -lightsDirection[i].xyz;
+		vec3 Ili = -lightsIntensity[i].xyz;
 		diffuse += Kd*(dot(N,L))*Ili;
+
+		vec3 V = eye.xyz - intrsc.p;
+		vec3 R = calc_R(N,L);
+		specular += Ks*(pow(dot(V,R),exponent))*Ili;
 	}
+	color = KaIamb + diffuse + specular;
     return color;
 }
 
 void main()
 {	
-	gl_FragColor = vec4(colorCalc(eye.xyz),1);      
+	vec3 v = position1 - eye.xyz;
+	Intersection intrsc = findIntersection(eye.xyz, v);
+	gl_FragColor = vec4(colorCalc(intrsc),1);      
 }
  
 
