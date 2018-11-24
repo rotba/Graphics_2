@@ -44,7 +44,7 @@ Intersection findIntersection(vec3 sourcePoint,vec3 v)
 			ans.index = i;
 		}
 	}
-	ans.p = sourcePoint + t*v;
+	ans.p = sourcePoint + ans.t*v;
     return ans;
     
 }
@@ -75,15 +75,15 @@ vec3 calcq0( vec4 plane)
 	vec3 Q0;
 	if(plane.z !=0.0)
 	{
-		Q0=vec3(0,0,-(plane.w)/plane.z); 
+		Q0=vec3(0,0,(plane.w)/plane.z); 
 	}
 	else if(plane.y !=0.0)
 	{
-		Q0=vec3(0.0,-(plane.w)/plane.y,0.0);
+		Q0=vec3(0.0,(plane.w)/plane.y,0.0);
 	}
 	else if(plane.x !=0)
 	{
-		Q0=vec3((-(plane.w)/plane.x),0.0,0.0);
+		Q0=vec3(((plane.w)/plane.x),0.0,0.0);
 	}
 	else if(plane.w!=0.0)
 	{
@@ -198,12 +198,12 @@ vec3 colorCalc( Intersection intrsc)
 		vec3 L = lightsDirection[i].xyz;
 		vec3 Ili = calc_light(intrsc.p, intrsc.index, i);
 		if((dot(N,L))>0){
-			//diffuse += Kd*(dot(N,L))*Ili;
+			diffuse += Kd*(dot(N,L))*Ili;
 		}
 		vec3 V = normalize(eye.xyz - intrsc.p);
 		vec3 R = calc_R(N,L);
 		if((dot(V,R))>0){
-			//specular += Ks*(pow(dot(V,R),2))*Ili;
+			specular += Ks*(pow(dot(V,R),2))*Ili;
 		}
 	}
 	color = KaIamb + diffuse + specular;
@@ -212,7 +212,7 @@ vec3 colorCalc( Intersection intrsc)
 
 void main()
 {	
-	vec3 v = position1 - eye.xyz;
+	vec3 v =normalize( position1 - eye.xyz);
 	Intersection intrsc = findIntersection(eye.xyz, v);
 	gl_FragColor = vec4(colorCalc(intrsc),1);
 }
