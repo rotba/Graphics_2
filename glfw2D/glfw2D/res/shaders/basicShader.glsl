@@ -1,6 +1,7 @@
  #version 130 
 
-#define exponent 3
+#define exponent 10
+#define MAX_FLOAT 1000.0
 uniform vec4 eye;
 uniform vec4 ambient;
 uniform vec4[20] objects;
@@ -60,11 +61,11 @@ float intersect(vec3 sourcePoint,vec3 v, vec4 object)
    return t; 
 }
 
-float intersects_plane(vec3 sourcePoint,vec3 v, vec4 object)
+float intersects_plane(vec3 sourcePoint,vec3 v, vec4 plane)
 {
 	float t = -1.0;
-	vec3 Q0=calcq0(object);
-	vec3 N=normalize(object.xyz);
+	vec3 Q0=calcq0(plane);
+	vec3 N=normalize(plane.xyz);
 	vec3 V=normalize(v);
 	vec3 PQ=Q0-sourcePoint;
 	t=dot(N, PQ/dot(N,V));
@@ -75,15 +76,15 @@ vec3 calcq0( vec4 plane)
 	vec3 Q0;
 	if(plane.z !=0.0)
 	{
-		Q0=vec3(0,0,(plane.w)/plane.z); 
+		Q0=vec3(0,0,-(plane.w)/plane.z); 
 	}
 	else if(plane.y !=0.0)
 	{
-		Q0=vec3(0.0,(plane.w)/plane.y,0.0);
+		Q0=vec3(0.0,-(plane.w)/plane.y,0.0);
 	}
 	else if(plane.x !=0)
 	{
-		Q0=vec3(((plane.w)/plane.x),0.0,0.0);
+		Q0=vec3((-(plane.w)/plane.x),0.0,0.0);
 	}
 	else if(plane.w!=0.0)
 	{
@@ -164,7 +165,7 @@ vec3 norm_at_point(Intersection intrsc)
 
 vec3 calc_R(vec3 N, vec3 L)
 {
-	return reflect(-L, N);
+	return reflect(L, N);
 }
 
 vec3 colorCalc( Intersection intrsc)
@@ -203,7 +204,7 @@ vec3 colorCalc( Intersection intrsc)
 		vec3 V = normalize(eye.xyz - intrsc.p);
 		vec3 R = calc_R(N,L);
 		if((dot(V,R))>0){
-			specular += Ks*(pow(dot(V,R),2))*Ili;
+			specular += Ks*(pow(dot(V,R),exponent))*Ili;
 		}
 	}
 	color = KaIamb + diffuse + specular;
