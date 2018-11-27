@@ -2,6 +2,7 @@
 
 #define exponent 15
 #define INFINITY 1000.5693
+#define MAX_LEVEL 0
 uniform vec4 eye;
 uniform vec4 ambient;
 uniform vec4[20] objects;
@@ -206,57 +207,79 @@ bool occluded(vec3 p, int light_idx){
 	return false;
 }
 
-vec3 colorCalc( Intersection intrsc)
+
+vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 {
 	vec3 color;
-	vec3 Ka = objColors[intrsc.index].xyz;
+	Intersection curr_intersc = intrs;
+	vec3 curr_sourcePoint = sourcePoin;
+	int level = 0;
+	while(level <= MAX_LEVEL){
+		vec3 Ka = objColors[curr_intersc.index].xyz;
 
-	vec3 KaIamb = Ka*(ambient.xyz);
-	vec3 diffuse;
-	vec3 specular;
-	vec3 Kd = vec3(0.7,0.7,0.7);
+		vec3 KaIamb = Ka*(ambient.xyz);
+		vec3 diffuse;
+		vec3 specular;
+		vec3 Kd = vec3(0.7,0.7,0.7);
 	
-	if(objects[intrsc.index].w < 0)
-	{
-		vec3 p= intrsc.p;
-		if(p.x * p.y >=0){
-			if((mod(int(1.5*p.x),2) == mod(int(1.5*p.y),2)))
-			{
-				KaIamb=0.5*KaIamb;
+		if(objects[curr_intersc.index].w < 0)
+		{
+			vec3 p= curr_intersc.p;
+			if(p.x * p.y >=0){
+				if((mod(int(1.5*p.x),2) == mod(int(1.5*p.y),2)))
+				{
+					KaIamb=0.5*KaIamb;
+				}
+			}else{
+				if((mod(int(1.5*p.x),2) != mod(int(1.5*p.y),2)))
+				{
+					KaIamb=0.5*KaIamb;
+				}
 			}
+		}
+		vec3 Ks = vec3(0.7,0.7,0.7);
+		for(int i = 0; i < sizes[1]; i++){
+			if( !occluded(curr_intersc.p, i)){
+				vec3 N = normalize(norm_at_point(curr_intersc));
+				vec3 L = -lightsDirection[i].xyz;
+				vec3 Ili = calc_light(curr_intersc.p, curr_intersc.index, i);
+				if((dot(N,L))>0){
+					diffuse += Kd*(dot(N,L))*Ili;
+				}
+				vec3 V = normalize(curr_sourcePoint - curr_intersc.p);
+				vec3 R = calc_R(N,L);
+				if((dot(V,R))>0){
+					specular += Ks*(pow(dot(V,R),exponent))*Ili;
+				}
+			}
+		}
+		vec3 curr_Ks = vec3(pow(Ks.x, level),pow(Ks.y, level),pow(Ks.z, level));
+		color = curr_Ks*(KaIamb + diffuse + specular);
+		
+
+		vec3 N = normalize(norm_at_point(curr_intersc));
+		vec3 in_ray = -(curr_intersc.p -curr_sourcePoint);
+		vec3 out_ray = calc_R(N, in_ray);
+		Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
+		curr_sourcePoint = curr_intersc.p;
+		curr_intersc = nextIntr;
+		if(nextIntr.t == INFINITY){
+			level =MAX_LEVEL+1;
 		}else{
-			if((mod(int(1.5*p.x),2) != mod(int(1.5*p.y),2)))
-			{
-				KaIamb=0.5*KaIamb;
-			}
+			level+=1;
 		}
+		
 	}
-	vec3 Ks = vec3(0.7,0.7,0.7);
-	for(int i = 0; i < sizes[1]; i++){
-		if( !occluded(intrsc.p, i)){
-			vec3 N = normalize(norm_at_point(intrsc));
-			vec3 L = -lightsDirection[i].xyz;
-			vec3 Ili = calc_light(intrsc.p, intrsc.index, i);
-			if((dot(N,L))>0){
-				diffuse += Kd*(dot(N,L))*Ili;
-			}
-			vec3 V = normalize(eye.xyz - intrsc.p);
-			vec3 R = calc_R(N,L);
-			if((dot(V,R))>0){
-				specular += Ks*(pow(dot(V,R),exponent))*Ili;
-			}
-		}
-	}
-	color = KaIamb + diffuse + specular;
 	
     return color;
 }
+
 
 void main()
 {	
 	vec3 v =normalize( position1 - eye.xyz);
 	Intersection intrsc = findIntersection(eye.xyz, v);
-	gl_FragColor = vec4(colorCalc(intrsc),1);
+	gl_FragColor = vec4(colorCalc(intrsc, eye.xyz),1);
 }
  
 
