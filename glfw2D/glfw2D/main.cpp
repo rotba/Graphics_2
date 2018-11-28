@@ -11,7 +11,7 @@ using namespace glm;
 
 int main(int argc,char** argv)
 {
-	Display display(800,600,"hello!");
+	Display display(600,600,"hello!");
 	//Shader shader("res/shaders/mbrot");
 	Shader shader("res/shaders/basicShader");
 	Vertex vertices[] = {Vertex(vec3(-1,-1,0),vec2(0,0),vec3(0,0,1)),Vertex(vec3(1,-1,0),vec2(1,0),vec3(0,0,1)),Vertex(vec3(1,1,0),vec2(1,1),vec3(0,0,1)),Vertex(vec3(-1,1,0),vec2(0,1),vec3(0,0,1))};
