@@ -30,7 +30,7 @@ vec3 calc_spotlight(vec3 p, int obj_idx ,int light_src_idx);
 vec3 calc_directional_light(vec3 p, int obj_idx ,int light_src_idx);
 vec4 get_spolight_position(int light_src_idx);
 vec3 norm_at_point(Intersection intrsc);
-vec3 calc_R(vec3 N, vec3 L);
+//vec3 calc_R(vec3 N, vec3 L);
 bool occluded(vec3 p, int light_idx);
 
 
@@ -67,7 +67,7 @@ float intersects_plane(vec3 sourcePoint,vec3 v, vec4 plane)
 {
 	float t = INFINITY;
 	vec3 Q0=calcq0(plane);
-	vec3 N=normalize(plane.xyz);
+	vec3 N=-normalize(plane.xyz);
 	vec3 V=normalize(v);
 	vec3 PQ=Q0-sourcePoint;
 	t=dot(N, PQ/dot(N,V));
@@ -115,8 +115,11 @@ float intersects_sphere(vec3 sourcePoint,vec3 v, vec4 sphere)
 	float b=dot(2*V,OP);
 	float c=pow(length(OP),2)-R2;
 	float delta=b*b-4*a*c;
-	float t1=(-b+sqrt(delta))/2.0;
-	float t2=(-b-sqrt(delta))/2.0;
+	if(delta < 0){
+		return INFINITY;
+	}
+	float t1=(-b+sqrt(delta))/2.0*a;
+	float t2=(-b-sqrt(delta))/2.0*a;
 	t=min(t1,t2);
 	if (t<0){
 		t=max(t1,t2);
@@ -138,6 +141,7 @@ vec3 calc_light(vec3 p, int obj_idx ,int light_src_idx)
 	return ans;
 }
 vec3 calc_spotlight(vec3 p, int obj_idx ,int light_src_idx){
+	return lightsIntensity[light_src_idx].xyz;
 	vec3 light_position = get_spolight_position(light_src_idx).xyz;
 	vec3 D = normalize(lightsDirection[light_src_idx].xyz);
 	vec3 L = normalize(p - light_position);
@@ -146,6 +150,7 @@ vec3 calc_spotlight(vec3 p, int obj_idx ,int light_src_idx){
 
 }
 vec3 calc_directional_light(vec3 p, int obj_idx ,int light_src_idx){
+	return lightsIntensity[light_src_idx].xyz;
 	vec3 i0= lightsIntensity[light_src_idx].xyz;
 	vec3 D = (lightsDirection[light_src_idx].xyz);
 	Intersection intrsc;
@@ -177,10 +182,10 @@ vec3 norm_at_point(Intersection intrsc)
 	return ans;
 }
 
-vec3 calc_R(vec3 N, vec3 L)
-{
-	return reflect(-L, N);
-}
+//vec3 calc_R(vec3 N, vec3 L)
+//{
+	//return reflect(L, N);
+//}
 
 bool occluded(vec3 p, int light_idx){
 	vec4 light_src = lightsDirection[light_idx];
@@ -223,7 +228,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		vec3 Ka = objColors[curr_intersc.index].xyz;
 		vec3 diffuse;
 		vec3 specular;
-		vec3 Kd = vec3(0.7,0.7,0.7);
+		vec3 Kd = Ka;
 		if(objects[curr_intersc.index].w < 0)
 		{
 			vec3 p= curr_intersc.p;
@@ -253,22 +258,23 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				}
 				vec3 Ili = calc_light(curr_intersc.p, curr_intersc.index, i);
 				if((dot(N,L))>0){
-					diffuse += clamp(Kd*(dot(N,L))*Ili, vec3(0,0,0), vec3(0.2,0.2,0.2));
+					diffuse += Kd*(dot(N,L))*Ili;
 				}
 				vec3 V = normalize(curr_sourcePoint - curr_intersc.p);
-				vec3 R = calc_R(N,L);
+				vec3 R = reflect(-L,N);
 				if((dot(V,R))>0){
-					specular += clamp(Ks*(pow(dot(V,R),exponent))*Ili, vec3(0,0,0), vec3(0.2,0.2,0.2));
+					specular += Ks*(pow(dot(V,R),exponent))*Ili;
 				}
 			}
 		}
-		vec3 curr_Ks = vec3(pow(0.1, level),pow(0.1, level),pow(0.1, level));
-		color += clamp(curr_Ks*(KaIamb + diffuse + specular),vec3(0,0,0), vec3(1,1,1));
+		//vec3 curr_Ks = vec3(pow(0.1, level),pow(0.1, level),pow(0.1, level));
+		//color += curr_Ks*(KaIamb + diffuse + specular);
+		color += KaIamb + diffuse + specular;
 		
-
+		
 		vec3 N = normalize(norm_at_point(curr_intersc));
 		vec3 in_ray = -(curr_intersc.p -curr_sourcePoint);
-		vec3 out_ray = calc_R(N, in_ray);
+		vec3 out_ray = reflect(in_ray,N);
 		Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
 		curr_sourcePoint = curr_intersc.p;
 		curr_intersc = nextIntr;
@@ -277,9 +283,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		}else{
 			level+=1;
 		}
-		
 	}
-	
     return color;
 }
 
