@@ -1,6 +1,6 @@
  #version 130 
 
-#define exponent 15
+#define exponent 12
 #define INFINITY 1000.5693
 #define MAX_LEVEL 0
 uniform vec4 eye;
@@ -249,7 +249,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 					vec3 sl_pos = get_spolight_position(i).xyz;
 					L = normalize(sl_pos - curr_intersc.p);
 				}else{
-					L = -lightsDirection[i].xyz;
+					L = -normalize(lightsDirection[i].xyz);
 				}
 				vec3 Ili = calc_light(curr_intersc.p, curr_intersc.index, i);
 				if((dot(N,L))>0){
