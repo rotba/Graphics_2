@@ -206,7 +206,7 @@ bool occluded(vec3 p, int light_idx){
 		}
 		float length_to_light = length(light_pos.xyz - p);
 		float length_to_obj = length(intr.p - p);
-		if(intr.t != INFINITY){
+		if(intr.t != INFINITY && (length_to_obj < length_to_light)){
 			return true;
 		}
 	}else{
