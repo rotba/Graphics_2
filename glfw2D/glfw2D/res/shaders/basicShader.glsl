@@ -244,7 +244,13 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		for(int i = 0; i < sizes[1]; i++){
 			if( !occluded(curr_intersc.p, i) ){
 				vec3 N = normalize(norm_at_point(curr_intersc));
-				vec3 L = -lightsDirection[i].xyz;
+				vec3 L;
+				if(lightsDirection[i].w == 1.0){
+					vec3 sl_pos = get_spolight_position(i).xyz;
+					L = normalize(sl_pos - curr_intersc.p);
+				}else{
+					L = -lightsDirection[i].xyz;
+				}
 				vec3 Ili = calc_light(curr_intersc.p, curr_intersc.index, i);
 				if((dot(N,L))>0){
 					diffuse += clamp(Kd*(dot(N,L))*Ili, vec3(0,0,0), vec3(0.2,0.2,0.2));
