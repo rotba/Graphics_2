@@ -33,6 +33,8 @@ Shader::Shader(const std::string& fileName)
 	m_uniforms[5] = glGetUniformLocation(m_program, "lightsIntensity");
 	m_uniforms[6] = glGetUniformLocation(m_program, "lightPosition");
 	m_uniforms[7] = glGetUniformLocation(m_program, "sizes");
+	m_uniforms[8] = glGetUniformLocation(m_program, "mirrors");
+	m_uniforms[9] = glGetUniformLocation(m_program, "mirrors_size");
 	//t.Start();
 }
 

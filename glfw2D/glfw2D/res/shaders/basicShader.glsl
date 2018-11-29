@@ -2,7 +2,7 @@
 
 #define exponent 12
 #define INFINITY 1000.5693
-#define MAX_LEVEL 0
+#define MAX_LEVEL 5
 uniform vec4 eye;
 uniform vec4 ambient;
 uniform vec4[20] objects;
@@ -11,6 +11,8 @@ uniform vec4[10] lightsDirection;
 uniform vec4[10] lightsIntensity;
 uniform vec4[10] lightPosition;
 uniform ivec4 sizes; //{number of objects , number of lights , width, hight}  
+uniform ivec4 mirrors_size; 
+uniform vec4[20] mirrors;
 
 in vec3 position1;
 
@@ -32,6 +34,7 @@ vec4 get_spolight_position(int light_src_idx);
 vec3 norm_at_point(Intersection intrsc);
 //vec3 calc_R(vec3 N, vec3 L);
 bool occluded(vec3 p, int light_idx);
+bool is_mirror(int obj_idx);
 
 
 
@@ -217,6 +220,16 @@ bool occluded(vec3 p, int light_idx){
 	return false;
 }
 
+bool is_mirror(int obj_idx){
+	vec4 obj = objects[obj_idx];
+	for(int i = 0; i < mirrors_size[0]; i++){
+		if(obj == mirrors[i]){
+			return true;
+		}
+	}
+	return false;
+}
+
 
 vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 {
@@ -269,20 +282,23 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		}
 		//vec3 curr_Ks = vec3(pow(0.1, level),pow(0.1, level),pow(0.1, level));
 		//color += curr_Ks*(KaIamb + diffuse + specular);
-		color += KaIamb + diffuse + specular;
-		
-		
-		vec3 N = normalize(norm_at_point(curr_intersc));
-		vec3 in_ray = -(curr_intersc.p -curr_sourcePoint);
-		vec3 out_ray = reflect(in_ray,N);
-		Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
-		curr_sourcePoint = curr_intersc.p;
-		curr_intersc = nextIntr;
-		if(nextIntr.t == INFINITY){
-			level =MAX_LEVEL+1;
+		if(is_mirror(curr_intersc.index)){
+			vec3 N = normalize(norm_at_point(curr_intersc));
+			vec3 in_ray = curr_intersc.p -curr_sourcePoint;
+			vec3 out_ray = reflect(in_ray,N);
+			Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
+			curr_sourcePoint = curr_intersc.p;
+			curr_intersc = nextIntr;
+			if(nextIntr.t == INFINITY){
+				level = MAX_LEVEL+1;
+			}else{
+				level += 1;
+			}
 		}else{
-			level+=1;
+			level = MAX_LEVEL+1;
+			color += KaIamb + diffuse + specular;
 		}
+		
 	}
     return color;
 }

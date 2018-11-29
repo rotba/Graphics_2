@@ -15,6 +15,8 @@ private:
 	std::vector<glm::vec4> lightsIntensity;
 	std::vector<glm::vec4> lightPosition;
 	glm::ivec4 sizes; //{number of objects , number of lights , width, hight}  
+	std::vector<glm::vec4> mirrors;
+	glm::ivec4 mirrors_size;
 
 	
 	static inline unsigned int FindNextChar(unsigned int start, const char* str, unsigned int length, char token)
