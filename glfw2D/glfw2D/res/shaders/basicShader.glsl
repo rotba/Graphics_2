@@ -14,6 +14,7 @@ uniform ivec4 sizes; //{number of objects , number of lights , width, hight}
 uniform ivec4 mirrors_size; 
 uniform vec4[20] mirrors;
 
+
 in vec3 position1;
 
 struct Intersection
@@ -34,7 +35,9 @@ vec4 get_spolight_position(int light_src_idx);
 vec3 norm_at_point(Intersection intrsc);
 //vec3 calc_R(vec3 N, vec3 L);
 bool occluded(vec3 p, int light_idx);
-//bool is_mirror(int obj_idx);
+bool is_mirror(int obj_idx);
+
+
 
 
 
@@ -220,16 +223,9 @@ bool occluded(vec3 p, int light_idx){
 	return false;
 }
 
-//bool is_mirror(int obj_idx){
-	//return false;
-	//vec4 obj = objects[obj_idx];
-	//for(int i = 0; i < mirrors_size[0]; i++){
-		//if(obj == mirrors[i]){
-			//return true;
-		//}
-	//}
-	//return false;
-//}
+bool is_mirror(int obj_idx){
+	return false;
+}
 
 
 
@@ -282,14 +278,16 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				}
 			}
 		}
-		bool is_mirror = false;
+		bool ismirror = false;
 		vec4 obj = objects[curr_intersc.index];
-		//for(int i = 0; i < mirrors_size[0]; i++){
-		//	if(obj == mirrors[i]){
-		is_mirror =  true;
-			//}
-		//}
-		if(is_mirror){
+		if( mirrors_size[0] != -1){
+			for(int j; j < mirrors_size[0]; j++){
+				if(obj == mirrors[j]){
+					ismirror = true;
+				}
+			}
+		}
+		if(ismirror){
 			vec3 N = normalize(norm_at_point(curr_intersc));
 			vec3 in_ray = curr_intersc.p - curr_sourcePoint;
 			vec3 out_ray = normalize(reflect(in_ray,N));
@@ -302,7 +300,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				level += 1;
 			}
 		}else{
-			vec3 curr_Ks = vec3(pow(0.7, level),pow(0.7, level),pow(0.7, level));
+			//vec3 curr_Ks = 1;// vec3(pow(0.7, level),pow(0.7, level),pow(0.7, level));
 			//color += curr_Ks*(KaIamb + diffuse + specular);
 			color += KaIamb + diffuse + specular;
 			level = MAX_LEVEL+1;
