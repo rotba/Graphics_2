@@ -52,6 +52,7 @@ void Scene::loadtoShader(Shader &shader)
 			}
 			shader.set_uniform4vi(7,sizes);
 			if (mirrors.size() > 0) {
+				std::cout << "hey" << std::endl;
 				shader.set_uniform4v(8, mirrors.size(), &mirrors[0]);
 			}
 			shader.set_uniform4vi(9, mirrors_size);
@@ -103,6 +104,7 @@ Scene::Scene(const std::string& fileName,int width,int height)
 				break;
 				case 'r':
 					objects.push_back(parseVec4(line));
+					std::cout << "ohoh " << line << std::endl;
 					mirrors.push_back(parseVec4(line));
 				break;
 				case 'c':
@@ -120,6 +122,7 @@ Scene::Scene(const std::string& fileName,int width,int height)
 			}
 		}
 		sizes =  glm::ivec4(objects.size(), lightsDirection.size(), width, height);
+		std::cout << mirrors.size() << line << std::endl;
 		mirrors_size = glm::ivec4(mirrors.size(), 0, 0, 0);
 	}
 	else

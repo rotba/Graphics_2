@@ -2,9 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\glfw2D",
-    "\\glfw2D\\glfw2D",
-    "\\glfw2D\\glfw2D\\res"
+    "\\glfw2D\\Debug",
+    "\\glfw2D\\engine2D"
   ],
-  "SelectedNode": "\\glfw2D\\glfw2D\\main.cpp",
   "PreviewInSolutionExplorer": false
 }

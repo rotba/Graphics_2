@@ -1,5 +1,3 @@
 ﻿  sceneParser.cpp
 c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\engine2d\sceneparser.h(42): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  shader.cpp
-  Generating Code...
   engine2D.vcxproj -> C:\Users\user\Documents\לימודים\שנה ג\גרפיקה\Graphics_2\glfw2D\Debug\engine2D.lib

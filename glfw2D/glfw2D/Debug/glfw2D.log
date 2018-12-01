@@ -1,6 +1,1 @@
-﻿  main.cpp
-c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\glfw2d\debugtimer.h(13): warning C4244: '=': conversion from 'uint64_t' to 'unsigned int', possible loss of data
-c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\glfw2d\debugtimer.h(18): warning C4244: 'initializing': conversion from 'uint64_t' to 'unsigned int', possible loss of data
-c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\glfw2d\debugtimer.h(24): warning C4244: 'initializing': conversion from 'uint64_t' to 'unsigned int', possible loss of data
-c:\users\user\documents\לימודים\שנה ג\גרפיקה\graphics_2\glfw2d\engine2d\sceneparser.h(42): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-  glfw2D.vcxproj -> C:\Users\user\Documents\לימודים\שנה ג\גרפיקה\Graphics_2\glfw2D\Debug\glfw2D.exe
+﻿  glfw2D.vcxproj -> C:\Users\user\Documents\לימודים\שנה ג\גרפיקה\Graphics_2\glfw2D\Debug\glfw2D.exe

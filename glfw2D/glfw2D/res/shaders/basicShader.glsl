@@ -34,7 +34,7 @@ vec4 get_spolight_position(int light_src_idx);
 vec3 norm_at_point(Intersection intrsc);
 //vec3 calc_R(vec3 N, vec3 L);
 bool occluded(vec3 p, int light_idx);
-bool is_mirror(int obj_idx);
+//bool is_mirror(int obj_idx);
 
 
 
@@ -220,15 +220,17 @@ bool occluded(vec3 p, int light_idx){
 	return false;
 }
 
-bool is_mirror(int obj_idx){
-	vec4 obj = objects[obj_idx];
-	for(int i = 0; i < mirrors_size[0]; i++){
-		if(obj == mirrors[i]){
-			return true;
-		}
-	}
-	return false;
-}
+//bool is_mirror(int obj_idx){
+	//return false;
+	//vec4 obj = objects[obj_idx];
+	//for(int i = 0; i < mirrors_size[0]; i++){
+		//if(obj == mirrors[i]){
+			//return true;
+		//}
+	//}
+	//return false;
+//}
+
 
 
 vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
@@ -280,12 +282,17 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				}
 			}
 		}
-		//vec3 curr_Ks = vec3(pow(0.1, level),pow(0.1, level),pow(0.1, level));
-		//color += curr_Ks*(KaIamb + diffuse + specular);
-		if(is_mirror(curr_intersc.index)){
+		bool is_mirror = false;
+		vec4 obj = objects[curr_intersc.index];
+		//for(int i = 0; i < mirrors_size[0]; i++){
+		//	if(obj == mirrors[i]){
+		is_mirror =  true;
+			//}
+		//}
+		if(is_mirror){
 			vec3 N = normalize(norm_at_point(curr_intersc));
-			vec3 in_ray = curr_intersc.p -curr_sourcePoint;
-			vec3 out_ray = reflect(in_ray,N);
+			vec3 in_ray = curr_intersc.p - curr_sourcePoint;
+			vec3 out_ray = normalize(reflect(in_ray,N));
 			Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
 			curr_sourcePoint = curr_intersc.p;
 			curr_intersc = nextIntr;
@@ -295,10 +302,11 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				level += 1;
 			}
 		}else{
-			level = MAX_LEVEL+1;
+			vec3 curr_Ks = vec3(pow(0.7, level),pow(0.7, level),pow(0.7, level));
+			//color += curr_Ks*(KaIamb + diffuse + specular);
 			color += KaIamb + diffuse + specular;
+			level = MAX_LEVEL+1;
 		}
-		
 	}
     return color;
 }
