@@ -224,7 +224,11 @@ bool occluded(vec3 p, int light_idx){
 }
 
 bool is_mirror(vec4 obj){
-	return ( obj ==mirrors[0] ) || (obj ==mirrors[1]) || (obj ==mirrors[2]) || (obj ==mirrors[3]) || (obj ==mirrors[4]) || (obj ==mirrors[5]) || (obj ==mirrors[6]) || (obj ==mirrors[7]) || (obj ==mirrors[8]) || (obj ==mirrors[9]) || (obj ==mirrors[10]) || (obj ==mirrors[11]);
+	return 
+	(obj ==mirrors[0] ) || (obj ==mirrors[1]) || (obj ==mirrors[2]) || (obj ==mirrors[3]) || (obj ==mirrors[4]) ||
+	(obj ==mirrors[5]) || (obj ==mirrors[6]) || (obj ==mirrors[7]) || (obj ==mirrors[8]) || (obj ==mirrors[9]) ||
+	(obj ==mirrors[10]) || (obj ==mirrors[11]) || (obj ==mirrors[12]) || (obj ==mirrors[13]) || (obj ==mirrors[14]) ||
+	(obj ==mirrors[15]) || (obj ==mirrors[16]) || (obj ==mirrors[17]) || (obj ==mirrors[18]) || (obj ==mirrors[19]);
 }
 
 
