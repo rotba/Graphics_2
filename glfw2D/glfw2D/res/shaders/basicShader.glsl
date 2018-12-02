@@ -236,9 +236,10 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 	vec3 curr_sourcePoint = sourcePoin;
 	int level = 0;
 	while(level <= MAX_LEVEL){
+		//vec3 sdfsdf = objects[10].xyz;
 		vec3 Ka = objColors[curr_intersc.index].xyz;
-		vec3 diffuse;
-		vec3 specular;
+		vec3 diffuse=vec3(0,0,0);
+		vec3 specular=vec3(0,0,0);
 		vec3 Kd = Ka;
 		if(objects[curr_intersc.index].w < 0)
 		{
@@ -248,7 +249,8 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				{
 					Ka=0.5*Ka;
 				}
-			}else{
+			}
+			else{
 				if((mod(int(1.5*p.x),2) != mod(int(1.5*p.y),2)))
 				{
 					Ka=0.5*Ka;
@@ -264,7 +266,8 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				if(lightsDirection[i].w == 1.0){
 					vec3 sl_pos = get_spolight_position(i).xyz;
 					L = normalize(sl_pos - curr_intersc.p);
-				}else{
+				}
+				else{
 					L = -normalize(lightsDirection[i].xyz);
 				}
 				vec3 Ili = calc_light(curr_intersc.p, curr_intersc.index, i);
@@ -281,7 +284,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		bool ismirror = false;
 		vec4 obj = objects[curr_intersc.index];
 		if( mirrors_size[0] != -1){
-			for(int j; j < mirrors_size[0]; j++){
+			for(int j = 0; j < mirrors_size[0]; j++){
 				if(obj == mirrors[j]){
 					ismirror = true;
 				}
@@ -289,20 +292,22 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 		}
 		if(ismirror){
 			vec3 N = normalize(norm_at_point(curr_intersc));
-			vec3 in_ray = curr_intersc.p - curr_sourcePoint;
+			vec3 in_ray =normalize( curr_intersc.p - curr_sourcePoint);
 			vec3 out_ray = normalize(reflect(in_ray,N));
 			Intersection nextIntr = findIntersection(curr_intersc.p, out_ray);
 			curr_sourcePoint = curr_intersc.p;
 			curr_intersc = nextIntr;
 			if(nextIntr.t == INFINITY){
 				level = MAX_LEVEL+1;
-			}else{
-				level += 1;
 			}
-		}else{
-			//vec3 curr_Ks = 1;// vec3(pow(0.7, level),pow(0.7, level),pow(0.7, level));
-			//color += curr_Ks*(KaIamb + diffuse + specular);
-			color += KaIamb + diffuse + specular;
+			else{
+			color = KaIamb + diffuse + specular;
+				level =level+ 1;
+			}
+		}
+		else{
+			
+			color = KaIamb + diffuse + specular;
 			level = MAX_LEVEL+1;
 		}
 	}
