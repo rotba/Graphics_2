@@ -35,7 +35,7 @@ vec4 get_spolight_position(int light_src_idx);
 vec3 norm_at_point(Intersection intrsc);
 //vec3 calc_R(vec3 N, vec3 L);
 bool occluded(vec3 p, int light_idx);
-bool is_mirror(int obj_idx);
+bool is_mirror(vec4 obj_idx);
 
 
 
@@ -223,8 +223,8 @@ bool occluded(vec3 p, int light_idx){
 	return false;
 }
 
-bool is_mirror(int obj_idx){
-	return false;
+bool is_mirror(vec4 obj){
+	return ( obj ==mirrors[0] ) || (obj ==mirrors[1]) || (obj ==mirrors[2]) || (obj ==mirrors[3]) || (obj ==mirrors[4]) || (obj ==mirrors[5]) || (obj ==mirrors[6]) || (obj ==mirrors[7]) || (obj ==mirrors[8]) || (obj ==mirrors[9]) || (obj ==mirrors[10]) || (obj ==mirrors[11]);
 }
 
 
@@ -290,7 +290,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 				}
 			}
 		}
-		if(ismirror){
+		if(is_mirror(obj) && !(level ==MAX_LEVEL)){
 			vec3 N = normalize(norm_at_point(curr_intersc));
 			vec3 in_ray =normalize( curr_intersc.p - curr_sourcePoint);
 			vec3 out_ray = normalize(reflect(in_ray,N));
@@ -298,7 +298,7 @@ vec3 colorCalc( Intersection intrs, vec3 sourcePoin)
 			curr_sourcePoint = curr_intersc.p;
 			curr_intersc = nextIntr;
 			if(nextIntr.t == INFINITY){
-				level = MAX_LEVEL+1;
+				return vec3(0,0,0);
 			}
 			else{
 			color = KaIamb + diffuse + specular;
